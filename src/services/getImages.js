@@ -10,5 +10,6 @@ export const getImages = (searchText, page = 1) => {
     orientation: 'horizontal',
     per_page: 12,
   });
+
   return fetch(`${BASE_URL}?${params}`);
 };
