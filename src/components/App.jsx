@@ -4,6 +4,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getImages } from '../services/getImages';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Loader } from './Loader/Loader';
+import { Button } from './Button/Button';
 
 export class App extends Component {
   state = {
@@ -29,9 +31,15 @@ export class App extends Component {
         );
       } catch (error) {
         this.setState({ error: error.message });
+      } finally {
+        this.setState({ isLoading: false });
       }
     }
   }
+
+  handleLoadMore = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+  };
 
   handleFormSubmit = query => {
     if (query === this.state.query) {
@@ -41,12 +49,15 @@ export class App extends Component {
   };
 
   render() {
-    const { images } = this.state;
+    const { page, images, isLoading, totalHits } = this.state;
+    const total = totalHits / 12;
     return (
       <div>
+        <ToastContainer />
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ImageGallery images={images} />
-        <ToastContainer />
+        {isLoading && <Loader />}
+        {!isLoading && total > page && <Button onClick={this.handleLoadMore} />}
       </div>
     );
   }
