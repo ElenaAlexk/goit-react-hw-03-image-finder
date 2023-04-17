@@ -1,10 +1,12 @@
+import css from './ImageGalleryItem.module.css';
+
 export const ImageGalleryItem = ({ images }) => {
   return (
     <>
       {images.map(item => (
-        <li key={item.id} class="galleryItem">
+        <li key={item.id} className={css.GalleryItem}>
           <img
-            class="imageGalleryItem"
+            className={css.ImageGalleryItem}
             src={item.webformatURL}
             alt={item.tags}
           />
