@@ -7,7 +7,7 @@ import { Searchbar } from '../Searchbar/Searchbar';
 import { ImageGallery } from '../ImageGallery/ImageGallery';
 import { Loader } from '../Loader/Loader';
 import { Button } from '../Button/Button';
-import { Modal } from 'components/Modal/Modal';
+import { Modal } from '../Modal/Modal';
 
 export class App extends Component {
   state = {
@@ -20,6 +20,7 @@ export class App extends Component {
     showModal: false,
   };
 
+  //Виклик ф-ції після монтування. перевірка пропсів query i page//
   componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
     if (prevState.query !== query || prevState.page !== page) {
@@ -30,6 +31,7 @@ export class App extends Component {
   getSearch = (query, page) => {
     this.setState({ isLoading: true });
 
+    //запит на сервер//
     getImages(query, page)
       .then(res => res.json())
       .then(({ hits, totalHits }) => {
@@ -49,10 +51,12 @@ export class App extends Component {
       });
   };
 
+  //ф-ція по кліку на кнопку Load More//
   handleLoadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
+  //виклик ф-ції при натисканні на кнопку search//
   handleFormSubmit = query => {
     if (query === this.state.query) {
       return;
@@ -60,16 +64,13 @@ export class App extends Component {
     this.setState({ query, page: 1, images: [] });
   };
 
-  //openModal = (largeImageUrl, alt) => {
-  //this.setState(({ showModal }) => {
-  //return { showModal: !showModal, largeImageUrl, alt };
-  //});
-  //};
+  //відкриття та закритя модального вікна//
+  openModal = largeImageURL => {
+    this.setState({ largeImageURL, showModal: true });
+  };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => {
-      return { showModal: !showModal };
-    });
+  closeModal = () => {
+    this.setState({ showModal: false });
   };
 
   render() {
@@ -78,7 +79,7 @@ export class App extends Component {
       images,
       isLoading,
       totalHits,
-      largeImageUrl,
+      largeImageURL,
       alt,
       showModal,
     } = this.state;
@@ -87,12 +88,12 @@ export class App extends Component {
       <div className={css.App}>
         <ToastContainer />
         <Searchbar onSubmit={this.handleFormSubmit} />
-        <ImageGallery onClick={this.toggleModal} images={images} />
+        <ImageGallery togleModal={this.openModal} images={images} />
         {isLoading && <Loader />}
         {!isLoading && total > page && <Button onClick={this.handleLoadMore} />}
         {showModal && (
-          <Modal closeModal={this.toggleModal}>
-            <img src={largeImageUrl} alt={alt} />
+          <Modal closeModal={this.closeModal}>
+            <img src={largeImageURL} alt={alt} />
           </Modal>
         )}
       </div>

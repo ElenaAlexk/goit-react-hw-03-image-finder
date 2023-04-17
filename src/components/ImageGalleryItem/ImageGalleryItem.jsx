@@ -1,10 +1,17 @@
+import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 
-export const ImageGalleryItem = ({ images }) => {
+export const ImageGalleryItem = ({ images, togleModal }) => {
   return (
     <>
       {images.map(item => (
-        <li key={item.id} className={css.GalleryItem}>
+        <li
+          key={item.id}
+          onClick={event => {
+            togleModal(item.largeImageURL, item.tags);
+          }}
+          className={css.GalleryItem}
+        >
           <img
             className={css.ImageGalleryItem}
             src={item.webformatURL}
@@ -14,4 +21,8 @@ export const ImageGalleryItem = ({ images }) => {
       ))}
     </>
   );
+};
+
+ImageGalleryItem.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
